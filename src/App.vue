@@ -25,9 +25,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+import Toolbar from './components/Toolbar.vue'
+import Canvas from './components/Canvas.vue'
+
 export default defineComponent({
   name: 'App',
+  components: {
+    Toolbar,
+    Canvas,
+  },
+  setup() {
+    // Reactive state for color, brush size, tool
+    const color = ref('#000000')
+    const brushSize = ref(5)
+    const tool = ref('pencil')  // 'pencil' or 'eraser'
+
+    return {
+      color,
+      brushSize,
+      tool,
+    }
+  },
 })
 </script>
 
