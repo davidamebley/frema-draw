@@ -32,3 +32,42 @@
         </button>
     </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+    name: 'Toolbar',
+    props: {
+        color: {
+            type: String,
+            required: true,
+        },
+        brushSize: {
+            type: Number,
+            required: true,
+        },
+        tool: {
+            type: String,
+            required: true,
+        },
+    },
+    emits: ['update:color', 'update:brushSize', 'update:tool'],
+    setup(props, { emit }) {
+        const handleColorChange = (e: Event) => {
+            const newColor = (e.target as HTMLInputElement).value
+            emit('update:color', newColor)
+        }
+
+        const handleBrushSizeChange = (e: Event) => {
+            const newBrushSize = parseInt((e.target as HTMLInputElement).value, 10)
+            emit('update:brushSize', newBrushSize)
+        }
+
+        return {
+            handleColorChange,
+            handleBrushSizeChange,
+        }
+    },
+})
+</script>
