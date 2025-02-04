@@ -17,5 +17,18 @@
             :value="brushSize"
             @input="handleBrushSizeChange"
         />
+
+        <button
+            :class="{ active: tool === 'pencil'}"
+            @click="$emit('update:tool', 'pencil')"
+        >
+            Pencil
+        </button>
+        <button
+            :class="{ active: tool === 'eraser'}"
+            @click="$emit('update:tool', 'eraser')"
+        >
+            Eraser
+        </button>
     </div>
 </template>
