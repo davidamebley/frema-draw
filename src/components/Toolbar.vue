@@ -71,3 +71,21 @@ export default defineComponent({
     },
 })
 </script>
+
+<style scoped>
+.toolbar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+button {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+button.active {
+    background-color: #ddd;
+}
+</style>
