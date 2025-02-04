@@ -38,7 +38,7 @@ export default defineComponent({
                 if (context) {
                     ctx.value = context
                     // Set a default background color
-                    context.value.fillStyle = '#ffffff'
+                    context.fillStyle = '#ffffff'
                     context.fillRect(0, 0, canvasElem.value.width, canvasElem.value.height)
                 }
             }
