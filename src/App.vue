@@ -14,6 +14,13 @@
       @update:brushSize="brushSize = $event"
       @update:tool="tool = $event"
     />
+
+    <!-- Canvas -->
+     <Canvas
+      :color="color"
+      :brushSize="brushSize"
+      :tool="tool"
+    />
   </div>
 </template>
 
