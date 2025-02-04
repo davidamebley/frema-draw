@@ -1,7 +1,19 @@
 <template>
   <div id="app">
     <h1>Frema Draw</h1>
+
+    <!-- Will remove this later -->
     <p>Welcome to the Frema Draw app.</p>
+
+    <!-- Toolbar -->
+     <Toolbar
+      :color="color"
+      :brushSize="brushSize"
+      :tool="tool"
+      @update:color="color = $event"
+      @update:brushSize="brushSize = $event"
+      @update:tool="tool = $event"
+    />
   </div>
 </template>
 
