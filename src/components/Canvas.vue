@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 
 export default defineComponent({
     name: 'Canvas',
@@ -40,6 +40,17 @@ export default defineComponent({
                 }
             }
         })
+
+        // Watch for prop changes (color, brushSize, tool) and update context
+        watch(
+            () => [props.color, props.brushSize, props.tool],
+            () => {
+                if (!ctx.value) return
+                if (props.tool === 'eraser') {
+                    // "Eraser" approach: draw with the background color
+                }
+            }
+        )
 
         return {
             canvasElem,
