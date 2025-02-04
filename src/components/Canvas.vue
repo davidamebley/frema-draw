@@ -126,10 +126,19 @@ export default defineComponent({
         onMounted(() => {
             addEventListeners()
         })
-        
+
         return {
             canvasElem,
         }
     },
 })
 </script>
+
+<style scoped>
+.drawing-canvas {
+    border: 1px solid #ccc;
+    display: block;
+    margin: 0 auto;
+    touch-action: none; /* prevent browser gestures on touch devices */
+}
+</style>
