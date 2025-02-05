@@ -49,14 +49,18 @@ export default defineComponent({
             () => [props.color, props.brushSize, props.tool],
             () => {
                 if (!ctx.value) return
+
+                // Always use source-over blending mode
+                ctx.value.globalCompositeOperation = 'source-over'
+
                 if (props.tool === 'eraser') {
-                    // "Eraser" approach: draw with the background color/use composite operation
-                    ctx.value.globalCompositeOperation = 'destination-out'
+                    // Paint with white color (eraser)
+                    ctx.value.strokeStyle = '#ffffff'
                 } else {
                     // "Pencil" approach: draw in color
-                    ctx.value.globalCompositeOperation = 'source-over'
                     ctx.value.strokeStyle = props.color
                 }
+                
                 ctx.value.lineWidth = props.brushSize
             },
                 { immediate: true }
