@@ -40,6 +40,10 @@ export default defineComponent({
                     // Set a default background color
                     context.fillStyle = '#ffffff'
                     context.fillRect(0, 0, canvasElem.value.width, canvasElem.value.height)
+
+                    // Smoother strokes
+                    context.lineCap = 'round'
+                    context.lineJoin = 'round'
                 }
             }
         })
@@ -60,7 +64,7 @@ export default defineComponent({
                     // "Pencil" approach: draw in color
                     ctx.value.strokeStyle = props.color
                 }
-                
+
                 ctx.value.lineWidth = props.brushSize
             },
                 { immediate: true }
