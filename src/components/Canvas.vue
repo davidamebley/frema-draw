@@ -95,6 +95,12 @@ export default defineComponent({
             const { x, y } = getCoords(e)
             lastX = x
             lastY = y
+
+            // Draw a dot at the starting point
+            ctx.value.beginPath()
+            ctx.value.arc(x, y, ctx.value.lineWidth / 2, 0, Math.PI * 2)
+            ctx.value.fillStyle = ctx.value.strokeStyle
+            ctx.value.fill()
         }
 
         const draw = (e: MouseEvent | TouchEvent) => {
