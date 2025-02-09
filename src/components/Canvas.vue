@@ -1,5 +1,9 @@
+
 <template>
-    <canvas ref="canvasElem" class="drawing-canvas"></canvas>
+    <!-- Wrap canvas with checkerboard styling container -->
+     <div class="canvas-wrapper">
+        <canvas ref="canvasElem" class="drawing-canvas"></canvas>
+     </div> 
 </template>
 
 <script lang="ts">
