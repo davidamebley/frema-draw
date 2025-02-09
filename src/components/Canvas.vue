@@ -29,6 +29,8 @@ export default defineComponent({
     setup(props) {
         const canvasElem = ref<HTMLCanvasElement | null>(null)
         const ctx = ref<CanvasRenderingContext2D | null>(null)
+        
+        // State for drawing
         let isDrawing = false
         let lastX = 0
         let lastY = 0
@@ -38,14 +40,12 @@ export default defineComponent({
                 // Initialize canvas
                 canvasElem.value.width = 800
                 canvasElem.value.height = 600
+                
                 const context = canvasElem.value.getContext('2d')
                 if (context) {
                     ctx.value = context
-                    // Set a default background color
-                    context.fillStyle = '#ffffff'
-                    context.fillRect(0, 0, canvasElem.value.width, canvasElem.value.height)
 
-                    // Smoother strokes
+                    // Smoother edges for lines
                     context.lineCap = 'round'
                     context.lineJoin = 'round'
                 }
