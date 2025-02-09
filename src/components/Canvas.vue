@@ -52,20 +52,20 @@ export default defineComponent({
             }
         })
 
-        // Watch for prop changes (color, brushSize, tool) and update context
+        // Watch for changes to color, brushSize, or tool
         watch(
             () => [props.color, props.brushSize, props.tool],
             () => {
                 if (!ctx.value) return
 
-                // Always use source-over blending mode
-                ctx.value.globalCompositeOperation = 'source-over'
-
                 if (props.tool === 'eraser') {
-                    // Paint with white color (eraser)
-                    ctx.value.strokeStyle = '#ffffff'
+                    // Use destination-out for true erasing (transparent)
+                    ctx.value.globalCompositeOperation = 'destination-out'
+                    // Set stroke style to white for eraser. Could be any color
+                    ctx.value.strokeStyle = '#000000'
                 } else {
-                    // "Pencil" approach: draw in color
+                    // Pencil draws over existing content
+                    ctx.value.globalCompositeOperation = 'source-over'
                     ctx.value.strokeStyle = props.color
                 }
 
@@ -74,10 +74,11 @@ export default defineComponent({
                 { immediate: true }
         )
 
-        // Helper to get X, Y from MouseEvent or TouchEvent
+        // Retrieve coordinates from mouse or touch
         const getCoords = (e: MouseEvent | TouchEvent) => {
             if (!canvasElem.value) return { x: 0, y: 0 }
             const rect = canvasElem.value.getBoundingClientRect()
+
             if (e instanceof MouseEvent) {
                 return {
                     x: e.clientX - rect.left,
@@ -93,6 +94,7 @@ export default defineComponent({
             }
         }
 
+        // Start drawing
         const startDrawing = (e: MouseEvent | TouchEvent) => {
             if (!ctx.value) return
             isDrawing = true
@@ -100,29 +102,34 @@ export default defineComponent({
             lastX = x
             lastY = y
 
-            // Draw a dot at the starting point
+            // Draw a dot on single-click
             ctx.value.beginPath()
             ctx.value.arc(x, y, ctx.value.lineWidth / 2, 0, Math.PI * 2)
-            ctx.value.fillStyle = ctx.value.strokeStyle
+            ctx.value.fillStyle = props.tool === 'eraser' ? 'rgba(0,0,0,1)': props.color    // Set color based on tool. Eraser is irrelevant
             ctx.value.fill()
         }
 
+        // Continue drawing
         const draw = (e: MouseEvent | TouchEvent) => {
             if (!isDrawing || !ctx.value) return
             const { x, y } = getCoords(e)
+            
+            // Draw line from last position to current position
             ctx.value.beginPath()
             ctx.value.moveTo(lastX, lastY)
             ctx.value.lineTo(x, y)
             ctx.value.stroke()
+            
             lastX = x
             lastY = y
         }
 
+        // Stop drawing
         const stopDrawing = () => {
             isDrawing = false
         }
 
-        // Register event listeners on canvas
+
         const addEventListeners = () => {
             if (!canvasElem.value) return
 
@@ -153,10 +160,27 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* Wrapper sized to 800x600 to match with canvas */
+.canvas-wrapper {
+  position: relative;
+  width: 800px;
+  height: 600px;
+
+  /* Checkerboard background */
+  background-color: #fff; /* fallback if pattern doesn't load */
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%),
+    linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
 .drawing-canvas {
+    /* Make canvas fill entire parent/ wrapper */
+    position: absolute;
+    top: 0;
+    left: 0;
     border: 1px solid #ccc;
-    display: block;
-    margin: 0 auto;
     touch-action: none; /* prevent browser gestures on touch devices */
 }
 </style>
