@@ -152,8 +152,29 @@ export default defineComponent({
             addEventListeners()
         })
 
+        // Export canvas as image
+        const exportAsImage = (): string | null => {
+            if (!canvasElem.value) return null
+            return canvasElem.value.toDataURL('image/png')
+        }
+
+        // Load image from base64
+        const loadFromBase64 = (base64: string) => {
+            if (!canvasElem.value || !ctx.value) return
+            const img = new Image()
+            img.src = base64
+            img.onload = () => {
+                // Clear canvas first
+                ctx.value.clearRect(0, 0, canvasElem.value!.width, canvasElem.value!.height)
+                // Draw the loaded image
+                ctx.value.drawImage(img, 0, 0)
+            }
+        }
+
         return {
             canvasElem,
+            exportAsImage,
+            loadFromBase64,
         }
     },
 })
