@@ -71,14 +71,15 @@ export default defineComponent({
     }
 
     // Load from local storage
-    const handleLoadStorage = ( => {
+    const handleLoadStorage = () => {
       const saved = localStorage.getItem('frema-draw-image')
       if (saved && drawingCanvas.value) {
         drawingCanvas.value.loadFromBase64(saved)
       } else {
         alert('No saved image found.')
       }
-    })
+    }
+    
 
     return {
       color,
