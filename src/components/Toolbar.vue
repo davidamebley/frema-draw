@@ -18,6 +18,16 @@
             @input="handleBrushSizeChange"
         />
 
+        <!-- Input for filename -->
+        <input
+            type="text"
+            v-model="filename"
+            placeholder="Drawing name"
+            style="width: 100px;"
+            title="Enter a name for your drawing"
+        />
+
+        <!-- Tools -->
         <button
             :class="{ active: tool === 'pencil'}"
             @click="$emit('update:tool', 'pencil')"
@@ -45,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
     name: 'Toolbar',
@@ -65,6 +75,8 @@ export default defineComponent({
     },
     emits: ['update:color', 'update:brushSize', 'update:tool','save-png', 'save-storage', 'load-storage'],
     setup(props, { emit }) {
+        const filename = ref('')
+
         const handleColorChange = (e: Event) => {
             const newColor = (e.target as HTMLInputElement).value
             emit('update:color', newColor)
@@ -75,9 +87,21 @@ export default defineComponent({
             emit('update:brushSize', newBrushSize)
         }
 
+        // Emit the filename along with the event
+        const emitSave = () => {
+            emit('save-storage', filename.value)
+        }
+
+        const emitLoad = () => {
+            emit('load-storage', filename.value)
+        }
+
         return {
+            filename,
             handleColorChange,
             handleBrushSizeChange,
+            emitSave,
+            emitLoad,
         }
     },
 })
@@ -92,11 +116,13 @@ export default defineComponent({
 }
 
 button {
-    padding: 0.5rem;
+    padding: 0.3rem 0.5rem;
     cursor: pointer;
+    font-size: 1.2rem; /* enlarge emoji slightly */
 }
 
 button.active {
     background-color: #ddd;
+    border-radius: 4px;
 }
 </style>

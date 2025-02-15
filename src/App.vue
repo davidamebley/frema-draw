@@ -50,36 +50,37 @@ export default defineComponent({
 
     // Save as PNG
     const handleSavePng = () => {
-      // Access the exportAsImage method
       const base64 = drawingCanvas.value?.exportAsImage()
       if (!base64) return
-
-      // Create an <a> element to download the image
       const link = document.createElement('a')
       link.href = base64
       link.download = 'frema-draw.png'
       link.click()
     }
 
-    // Save to local storage
-    const handleSaveStorage = () => {
+    // Save to local storage under a chosen filename
+    const handleSaveStorage = (filename: string) => {
+      const name = filename.trim() || 'untitled'
       const base64 = drawingCanvas.value?.exportAsImage()
       if (base64) {
-        localStorage.setItem('frema-draw-image', base64)
-        alert('Image saved to local storage.')
+        // Prefix it with "AppName_" for clarity
+        const key = `FremaDraw_${name}`
+        localStorage.setItem(key, base64)
+        alert(`Saved drawing as "${key}" in local storage.`)
       }
     }
 
-    // Load from local storage
-    const handleLoadStorage = () => {
-      const saved = localStorage.getItem('frema-draw-image')
+    // Load from local storage with the chosen filename
+    const handleLoadStorage = (filename: string) => {
+      const name = filename.trim() || 'untitled'
+      const key = `FremaDraw_${name}`
+      const saved = localStorage.getItem(key)
       if (saved && drawingCanvas.value) {
         drawingCanvas.value.loadFromBase64(saved)
       } else {
-        alert('No saved image found.')
+        alert(`No saved image found under "${key}".`)
       }
     }
-    
 
     return {
       color,
