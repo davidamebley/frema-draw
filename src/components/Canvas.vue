@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
 
 export default defineComponent({
     name: 'Canvas',
@@ -27,6 +27,7 @@ export default defineComponent({
         },
     },
     setup(props) {
+        const wrapperElem = ref<HTMLDivElement | null>(null)
         const canvasElem = ref<HTMLCanvasElement | null>(null)
         const ctx = ref<CanvasRenderingContext2D | null>(null)
         
@@ -35,21 +36,37 @@ export default defineComponent({
         let lastX = 0
         let lastY = 0
 
-        onMounted(() => {
-            if (canvasElem.value) {
-                // Initialize canvas
-                canvasElem.value.width = 800
-                canvasElem.value.height = 600
-                
-                const context = canvasElem.value.getContext('2d')
-                if (context) {
-                    ctx.value = context
+        // Set canvas size to match the wrapper
+        const resizeCanvasToWrapper = () => {
+            if (!canvasElem.value || !wrapperElem.value) return
+            const { clientWidth, clientHeight } = wrapperElem.value
 
-                    // Smoother edges for lines
-                    context.lineCap = 'round'
-                    context.lineJoin = 'round'
-                }
-            }
+            canvasElem.value.width = clientWidth
+            canvasElem.value.height = clientHeight
+
+            // Re-initialize context
+            const context = canvasElem.value.getContext('2d')
+            if (context) {
+                ctx.value = context
+                ctx.value.lineCap = 'round'
+                ctx.value.lineJoin = 'round'
+            }      
+        }
+
+        onMounted(() => {
+            // Initially size to wrapper
+            resizeCanvasToWrapper()
+
+            // Resize when window is resized
+            window.addEventListener('resize', resizeCanvasToWrapper)
+
+            // Add event listeners for drawing
+            addEventListeners()
+        })
+
+        // Clean up the window event if removing the component
+        onUnmounted(() => {
+            window.removeEventListener('resize', resizeCanvasToWrapper)
         })
 
         // Watch for changes to color, brushSize, or tool
@@ -181,11 +198,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Wrapper sized to 800x600 to match with canvas */
 .canvas-wrapper {
   position: relative;
-  width: 800px;
-  height: 600px;
+  width: 100%;
+  aspect-ratio: 4 / 3; /* For a consistent shape */
 
   /* Checkerboard background */
   background-color: #fff; /* fallback if pattern doesn't load */
@@ -202,6 +218,8 @@ export default defineComponent({
     top: 0;
     left: 0;
     border: 1px solid #ccc;
-    touch-action: none; /* prevent browser gestures on touch devices */
+    touch-action: none; /* prevent gestures on touch devices */
+    width: 100%;
+    height: 100%;
 }
 </style>
