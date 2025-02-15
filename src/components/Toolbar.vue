@@ -21,23 +21,25 @@
         <button
             :class="{ active: tool === 'pencil'}"
             @click="$emit('update:tool', 'pencil')"
+            title="Pencil"
         >
-            Pencil
+            ✏️
         </button>
         <button
             :class="{ active: tool === 'eraser'}"
             @click="$emit('update:tool', 'eraser')"
+            title="Eraser"
         >
-            Eraser
+            🧽
         </button>
-        <button @click="$emit('load-storage')">
-            Load from Local
+        <button @click="$emit('load-storage')" title="Load from local storage">
+            📂
         </button>
-        <button @click="$emit('save-storage')">
-            Save to Local
+        <button @click="$emit('save-storage')" title="Save to local storage">
+            💾
         </button>
-        <button @click="$emit('save-png')">
-            Save PNG
+        <button @click="$emit('save-png')" title="Download as PNG">
+            🖼️
         </button>
     </div>
 </template>
