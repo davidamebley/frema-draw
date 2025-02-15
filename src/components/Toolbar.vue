@@ -30,6 +30,15 @@
         >
             Eraser
         </button>
+        <button @click="$emit('load-storage')">
+            Load from Local
+        </button>
+        <button @click="$emit('save-storage')">
+            Save to Local
+        </button>
+        <button @click="$emit('save-png')">
+            Save PNG
+        </button>
     </div>
 </template>
 
@@ -52,7 +61,7 @@ export default defineComponent({
             required: true,
         },
     },
-    emits: ['update:color', 'update:brushSize', 'update:tool'],
+    emits: ['update:color', 'update:brushSize', 'update:tool','save-png', 'save-storage', 'load-storage'],
     setup(props, { emit }) {
         const handleColorChange = (e: Event) => {
             const newColor = (e.target as HTMLInputElement).value
