@@ -23,9 +23,19 @@
             type="text"
             v-model="filename"
             placeholder="Drawing name"
+            list="savedDrawingsList"
             style="width: 100px;"
             title="Enter a name for your drawing"
         />
+
+        <!-- This datalist references savedKeys from the parent -->
+        <datalist id="savedDrawingsList">
+            <option
+                v-for="key in savedKeys"
+                :key="key"
+                :value="key.replace('FremaDraw_', '')"
+            />
+        </datalist>
 
         <!-- Tools -->
         <button
@@ -42,11 +52,11 @@
         >
             🧽
         </button>
-        <button @click="$emit('load-storage')" title="Load from local storage">
-            📂
+        <button @click="emitSave" title="Save to local storage">
+            💾 
         </button>
-        <button @click="$emit('save-storage')" title="Save to local storage">
-            💾
+        <button @click="emitLoad" title="Load from local storage">
+            📂 
         </button>
         <button @click="$emit('save-png')" title="Download as PNG">
             🖼️
@@ -72,6 +82,13 @@ export default defineComponent({
             type: String,
             required: true,
         },
+
+        // Receive the savedKeys array from App.vue
+        savedKeys: {
+            type: Array as PropType<string[]>,
+            default: () => [],
+        },
+
     },
     emits: ['update:color', 'update:brushSize', 'update:tool','save-png', 'save-storage', 'load-storage'],
     setup(props, { emit }) {
@@ -91,7 +108,6 @@ export default defineComponent({
         const emitSave = () => {
             emit('save-storage', filename.value)
         }
-
         const emitLoad = () => {
             emit('load-storage', filename.value)
         }
@@ -110,7 +126,7 @@ export default defineComponent({
 <style scoped>
 .toolbar {
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     align-items: center;
     margin-bottom: 1rem;
 }

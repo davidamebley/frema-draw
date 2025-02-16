@@ -5,11 +5,12 @@
     <!-- Will remove this later -->
     <p>Welcome to the Frema Draw app.</p>
 
-    <!-- Toolbar -->
+    <!-- Pass savedKeys as a prop to <Toolbar> -->
      <Toolbar
       :color="color"
       :brushSize="brushSize"
       :tool="tool"
+      :savedKeys="savedKeys"
       @update:color="color = $event"
       @update:brushSize="brushSize = $event"
       @update:tool="tool = $event"
@@ -29,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import Toolbar from './components/Toolbar.vue'
 import Canvas from './components/Canvas.vue'
 
@@ -48,6 +49,19 @@ export default defineComponent({
     // Store a reference to the Canvas component
     const drawingCanvas = ref()
 
+    const savedKeys = ref<string[]>([])
+
+    // Get all localStorage keys that match "FremaDraw_"
+    const refreshSavedKeys = () => {
+      const allKeys = Object.keys(localStorage)
+      savedKeys.value = allKeys.filter(k => k.startsWith('FremaDraw_'))
+    }
+
+    // Populate savedKeys so the toolbar's dropdown can see them
+    onMounted(() => {
+      refreshSavedKeys()
+    })
+
     // Save as PNG
     const handleSavePng = () => {
       const base64 = drawingCanvas.value?.exportAsImage()
@@ -58,22 +72,22 @@ export default defineComponent({
       link.click()
     }
 
-    // Save to local storage under a chosen filename
+    // Save to local storage under a chosen filename. After saving, call refreshSavedKeys() to update the list
     const handleSaveStorage = (filename: string) => {
-      const name = filename.trim() || 'untitled'
+      if (!filename) filename = 'untitled'
       const base64 = drawingCanvas.value?.exportAsImage()
       if (base64) {
-        // Prefix it with "AppName_" for clarity
-        const key = `FremaDraw_${name}`
+        const key = `FremaDraw_${filename.trim()}`
         localStorage.setItem(key, base64)
         alert(`Saved drawing as "${key}" in local storage.`)
+        refreshSavedKeys()
       }
     }
 
     // Load from local storage with the chosen filename
     const handleLoadStorage = (filename: string) => {
-      const name = filename.trim() || 'untitled'
-      const key = `FremaDraw_${name}`
+      if (!filename) filename = 'untitled'
+      const key = `FremaDraw_${filename.trim()}`
       const saved = localStorage.getItem(key)
       if (saved && drawingCanvas.value) {
         drawingCanvas.value.loadFromBase64(saved)
@@ -87,6 +101,8 @@ export default defineComponent({
       brushSize,
       tool,
       drawingCanvas,
+      savedKeys,
+      refreshSavedKeys,
       handleSavePng,
       handleSaveStorage,
       handleLoadStorage,

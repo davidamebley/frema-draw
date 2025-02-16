@@ -1,7 +1,7 @@
 
 <template>
     <!-- Wrap canvas with checkerboard styling container -->
-     <div class="canvas-wrapper">
+     <div class="canvas-wrapper" ref="wrapperElem">
         <canvas ref="canvasElem" class="drawing-canvas"></canvas>
      </div> 
 </template>
@@ -23,7 +23,7 @@ export default defineComponent({
         tool: {
             type: String,
             required: true,
-            validator: (value: String) => ['pencil', 'eraser'].includes(value),
+            validator: (value: string) => ['pencil', 'eraser'].includes(value),
         },
     },
     setup(props) {
@@ -36,7 +36,7 @@ export default defineComponent({
         let lastX = 0
         let lastY = 0
 
-        // Set canvas size to match the wrapper
+        // Dynamically size canvas to match the wrapper
         const resizeCanvasToWrapper = () => {
             if (!canvasElem.value || !wrapperElem.value) return
             const { clientWidth, clientHeight } = wrapperElem.value
@@ -53,18 +53,33 @@ export default defineComponent({
             }      
         }
 
+        // Add event listeners for drawing
+        const addEventListeners = () => {
+            if (!canvasElem.value) return
+
+            // Mouse events
+            canvasElem.value.addEventListener('mousedown', startDrawing)
+            canvasElem.value.addEventListener('mousemove', draw)
+            canvasElem.value.addEventListener('mouseup', stopDrawing)
+            canvasElem.value.addEventListener('mouseout', stopDrawing)
+
+            // Touch events
+            canvasElem.value.addEventListener('touchstart', startDrawing, { passive: false })
+            canvasElem.value.addEventListener('touchmove', (e) => {
+                e.preventDefault()  // Prevent scrolling
+                draw(e)
+            }, { passive: false })
+            canvasElem.value.addEventListener('touchend', stopDrawing)
+        }
+
+        // Called once the component is mounted
         onMounted(() => {
-            // Initially size to wrapper
             resizeCanvasToWrapper()
-
-            // Resize when window is resized
             window.addEventListener('resize', resizeCanvasToWrapper)
-
-            // Add event listeners for drawing
             addEventListeners()
         })
 
-        // Clean up the window event if removing the component
+        // Cleanup
         onUnmounted(() => {
             window.removeEventListener('resize', resizeCanvasToWrapper)
         })
@@ -91,7 +106,7 @@ export default defineComponent({
                 { immediate: true }
         )
 
-        // Retrieve coordinates from mouse or touch
+        // Helpers for drawing
         const getCoords = (e: MouseEvent | TouchEvent) => {
             if (!canvasElem.value) return { x: 0, y: 0 }
             const rect = canvasElem.value.getBoundingClientRect()
@@ -111,7 +126,6 @@ export default defineComponent({
             }
         }
 
-        // Start drawing
         const startDrawing = (e: MouseEvent | TouchEvent) => {
             if (!ctx.value) return
             isDrawing = true
@@ -146,36 +160,12 @@ export default defineComponent({
             isDrawing = false
         }
 
-
-        const addEventListeners = () => {
-            if (!canvasElem.value) return
-
-            // Mouse events
-            canvasElem.value.addEventListener('mousedown', startDrawing)
-            canvasElem.value.addEventListener('mousemove', draw)
-            canvasElem.value.addEventListener('mouseup', stopDrawing)
-            canvasElem.value.addEventListener('mouseout', stopDrawing)
-
-            // Touch events
-            canvasElem.value.addEventListener('touchstart', startDrawing, { passive: false })
-            canvasElem.value.addEventListener('touchmove', (e) => {
-                e.preventDefault()  // Prevent scrolling
-                draw(e)
-            }, { passive: false })
-            canvasElem.value.addEventListener('touchend', stopDrawing)
-        }
-
-        onMounted(() => {
-            addEventListeners()
-        })
-
-        // Export canvas as image
+        // Export/load image
         const exportAsImage = (): string | null => {
             if (!canvasElem.value) return null
             return canvasElem.value.toDataURL('image/png')
         }
 
-        // Load image from base64
         const loadFromBase64 = (base64: string) => {
             if (!canvasElem.value || !ctx.value) return
             const img = new Image()
@@ -189,6 +179,7 @@ export default defineComponent({
         }
 
         return {
+            wrapperElem,
             canvasElem,
             exportAsImage,
             loadFromBase64,
