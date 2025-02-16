@@ -7,12 +7,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref, watch } from 'vue'
+import type { PropType } from 'vue'
 
 export default defineComponent({
   name: 'Canvas',
   props: {
     color: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
     },
     brushSize: {
@@ -20,7 +21,7 @@ export default defineComponent({
       required: true,
     },
     tool: {
-      type: String,
+      type: String as PropType<string>,
       required: true,
       validator: (value: string) => ['pencil', 'eraser'].includes(value),
     },
