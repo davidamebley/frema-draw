@@ -171,10 +171,14 @@ export default defineComponent({
             const img = new Image()
             img.src = base64
             img.onload = () => {
-                // Clear canvas first
-                ctx.value.clearRect(0, 0, canvasElem.value!.width, canvasElem.value!.height)
-                // Draw the loaded image
-                ctx.value.drawImage(img, 0, 0)
+                if (ctx.value) {
+                    // Clear canvas first
+                    ctx.value.clearRect(0, 0, canvasElem.value!.width, canvasElem.value!.height)
+                }
+                if (ctx.value) {
+                    // Draw the loaded image
+                    ctx.value.drawImage(img, 0, 0)
+                }
             }
         }
 

@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, PropType } from 'vue'
 
 export default defineComponent({
     name: 'Toolbar',
@@ -91,7 +91,7 @@ export default defineComponent({
 
     },
     emits: ['update:color', 'update:brushSize', 'update:tool','save-png', 'save-storage', 'load-storage'],
-    setup(props, { emit }) {
+    setup(_, { emit }) {
         const filename = ref('')
 
         const handleColorChange = (e: Event) => {
