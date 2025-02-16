@@ -6,13 +6,13 @@
     <p>Welcome to the Frema Draw app.</p>
 
     <!-- Pass savedKeys as a prop to <Toolbar> -->
-     <Toolbar
+    <Toolbar
       :color="color"
-      :brushSize="brushSize"
+      :brush-size="brushSize"
       :tool="tool"
-      :savedKeys="savedKeys"
+      :saved-keys="savedKeys"
       @update:color="color = $event"
-      @update:brushSize="brushSize = $event"
+      @update:brush-size="brushSize = $event"
       @update:tool="tool = $event"
       @save-png="handleSavePng"
       @save-storage="handleSaveStorage"
@@ -20,10 +20,10 @@
     />
 
     <!-- Canvas -->
-     <Canvas
+    <Canvas
       ref="drawingCanvas"
       :color="color"
-      :brushSize="brushSize"
+      :brush-size="brushSize"
       :tool="tool"
     />
   </div>
@@ -44,7 +44,7 @@ export default defineComponent({
     // Reactive state for color, brush size, tool
     const color = ref('#000000')
     const brushSize = ref(5)
-    const tool = ref('pencil')  // 'pencil' or 'eraser'
+    const tool = ref('pencil') // 'pencil' or 'eraser'
 
     // Store a reference to the Canvas component
     const drawingCanvas = ref()
@@ -54,7 +54,7 @@ export default defineComponent({
     // Get all localStorage keys that match "FremaDraw_"
     const refreshSavedKeys = () => {
       const allKeys = Object.keys(localStorage)
-      savedKeys.value = allKeys.filter(k => k.startsWith('FremaDraw_'))
+      savedKeys.value = allKeys.filter((k) => k.startsWith('FremaDraw_'))
     }
 
     // Populate savedKeys so the toolbar's dropdown can see them
