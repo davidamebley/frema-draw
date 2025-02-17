@@ -2,6 +2,10 @@
 
 A lightweight, browser-based drawing application built with Vue 3 and TypeScript. Create, save, and replay your artwork with an intuitive interface.
 
+## Try it Live
+
+[Click here to try the app live](https://davidamebley.github.io/frema-draw)
+
 ## Features
 
 - 🎨 Essential Drawing Tools
